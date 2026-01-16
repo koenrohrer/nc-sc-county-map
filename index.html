@@ -71,6 +71,13 @@
             letter-spacing: 1px;
         }
 
+        .sidebar-header .hint {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
         .sidebar-section {
             padding: 20px;
             border-bottom: 1px solid var(--mw-gray);
@@ -545,6 +552,60 @@
             stroke-dasharray: 5, 3;
         }
 
+        .county.multi-selected {
+            stroke: var(--mw-orange) !important;
+            stroke-width: 3px !important;
+            filter: brightness(1.1);
+        }
+
+        /* Multi-Select Action Bar */
+        .multi-select-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--mw-navy);
+            color: var(--mw-white);
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .multi-select-bar.visible {
+            display: flex;
+        }
+
+        .multi-select-bar .count {
+            font-weight: 600;
+            color: var(--mw-orange);
+        }
+
+        .multi-select-bar select {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+        }
+
+        .multi-select-bar .btn {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .multi-select-bar .btn-clear {
+            background: transparent;
+            border: 1px solid var(--mw-white);
+            color: var(--mw-white);
+        }
+
+        .multi-select-bar .btn-clear:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
         .split-county-half {
             stroke: var(--mw-white);
             stroke-width: 1px;
@@ -616,6 +677,7 @@
             <div class="sidebar-header">
                 <h1>Sales Territory Map</h1>
                 <div class="subtitle">North Carolina</div>
+                <div class="hint">Tip: Cmd/Ctrl+click to select multiple counties</div>
             </div>
 
             <!-- Add Sales Rep -->
@@ -674,6 +736,15 @@
             <button class="btn btn-secondary export-btn" onclick="exportMap()">Export as Image</button>
             <div id="map"></div>
             <div class="tooltip" id="tooltip"></div>
+            <!-- Multi-Select Action Bar -->
+            <div class="multi-select-bar" id="multiSelectBar">
+                <span><span class="count" id="multiSelectCount">0</span> counties selected</span>
+                <select id="multiSelectRep">
+                    <option value="">-- Assign to Rep --</option>
+                </select>
+                <button class="btn btn-primary" onclick="assignSelectedCounties()">Assign</button>
+                <button class="btn btn-clear" onclick="clearSelection()">Clear</button>
+            </div>
             <div class="legend" id="legend">
                 <h3>Legend</h3>
                 <div id="legendItems"></div>
@@ -747,6 +818,9 @@
         let splitPoints = [];
         let splitLinePreview = null;
         let splitPolygons = null;
+
+        // Multi-Select State
+        let selectedCounties = new Set(); // Set of county GEOIDs
 
         // D3 Variables
         let svg, g, projection, path, zoom;
@@ -877,12 +951,21 @@
 
             g.append('path')
                 .datum(feature)
-                .attr('class', `county ${assignment ? '' : 'unassigned'}`)
+                .attr('class', `county ${assignment ? '' : 'unassigned'} ${selectedCounties.has(countyId) ? 'multi-selected' : ''}`)
                 .attr('d', path)
                 .attr('fill', getCountyColor(countyId))
                 .attr('data-id', countyId)
                 .on('click', (event, d) => {
-                    if (!splitMode) {
+                    if (splitMode) return;
+
+                    // Check for Cmd (Mac) or Ctrl (Windows/Linux) key
+                    if (event.metaKey || event.ctrlKey) {
+                        toggleCountySelection(d.properties.GEOID);
+                    } else {
+                        // Regular click - clear selection and open modal
+                        if (selectedCounties.size > 0) {
+                            clearSelection();
+                        }
                         openModal(d.properties);
                     }
                 })
@@ -1160,6 +1243,73 @@
         function closeModal() {
             document.getElementById('modalOverlay').classList.remove('visible');
             selectedCounty = null;
+        }
+
+        // Multi-Select Functions
+        function toggleCountySelection(countyId) {
+            if (selectedCounties.has(countyId)) {
+                selectedCounties.delete(countyId);
+            } else {
+                selectedCounties.add(countyId);
+            }
+            updateMultiSelectUI();
+            updateCountySelectionVisuals();
+        }
+
+        function updateCountySelectionVisuals() {
+            // Update visual state of all counties
+            g.selectAll('.county').each(function() {
+                const el = d3.select(this);
+                const countyId = el.attr('data-id');
+                el.classed('multi-selected', selectedCounties.has(countyId));
+            });
+        }
+
+        function updateMultiSelectUI() {
+            const bar = document.getElementById('multiSelectBar');
+            const countEl = document.getElementById('multiSelectCount');
+            const select = document.getElementById('multiSelectRep');
+
+            if (selectedCounties.size > 0) {
+                bar.classList.add('visible');
+                countEl.textContent = selectedCounties.size;
+
+                // Update rep dropdown
+                select.innerHTML = '<option value="">-- Assign to Rep --</option>';
+                salesReps.forEach(rep => {
+                    const option = document.createElement('option');
+                    option.value = rep.id;
+                    option.textContent = rep.name;
+                    select.appendChild(option);
+                });
+            } else {
+                bar.classList.remove('visible');
+            }
+        }
+
+        function assignSelectedCounties() {
+            const repId = document.getElementById('multiSelectRep').value;
+            if (!repId) {
+                alert('Please select a sales rep');
+                return;
+            }
+
+            // Assign all selected counties to the rep
+            selectedCounties.forEach(countyId => {
+                assignments[countyId] = repId;
+            });
+
+            saveToLocalStorage();
+            clearSelection();
+            redrawMap();
+            updateStats();
+            renderRepList();
+        }
+
+        function clearSelection() {
+            selectedCounties.clear();
+            updateMultiSelectUI();
+            updateCountySelectionVisuals();
         }
 
         function assignCounty() {
@@ -1607,10 +1757,14 @@
             if (e.key === 'Enter') addSalesRep();
         });
 
-        // ESC key to cancel split mode
+        // ESC key to cancel split mode or clear selection
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && splitMode) {
-                cancelSplitMode();
+            if (e.key === 'Escape') {
+                if (splitMode) {
+                    cancelSplitMode();
+                } else if (selectedCounties.size > 0) {
+                    clearSelection();
+                }
             }
         });
     </script>
