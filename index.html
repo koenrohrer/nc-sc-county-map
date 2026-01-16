@@ -1534,6 +1534,33 @@
             bg.setAttribute('fill', '#e8eef3');
             svgClone.insertBefore(bg, svgClone.firstChild);
 
+            // Inline styles for county paths (borders)
+            svgClone.querySelectorAll('.county, .split-county-half').forEach(el => {
+                el.style.stroke = '#1a2a3a';
+                el.style.strokeWidth = '1px';
+            });
+
+            // Inline styles for split county borders
+            svgClone.querySelectorAll('.split-county-border').forEach(el => {
+                el.style.stroke = '#1a2a3a';
+                el.style.strokeWidth = '1px';
+            });
+
+            // Inline styles for split divider lines
+            svgClone.querySelectorAll('.split-divider').forEach(el => {
+                el.style.stroke = '#1a2a3a';
+                el.style.strokeWidth = '2px';
+            });
+
+            // Make county labels smaller for export
+            svgClone.querySelectorAll('.county-label').forEach(el => {
+                el.style.fontSize = '5px';
+                el.style.fill = '#1a2a3a';
+                el.style.textAnchor = 'middle';
+                el.style.fontFamily = 'Roboto, Arial, sans-serif';
+                el.style.fontWeight = '500';
+            });
+
             const svgString = serializer.serializeToString(svgClone);
             const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(svgBlob);
