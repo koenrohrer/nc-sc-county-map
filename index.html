@@ -47,7 +47,41 @@
             border-right: 1px solid var(--mw-gray);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: visible;
+            transition: margin-left 0.3s ease, opacity 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar.collapsed {
+            margin-left: -340px;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            top: 50%;
+            right: -32px;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 64px;
+            background: var(--mw-navy);
+            border: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--mw-white);
+            font-size: 16px;
+            z-index: 100;
+            transition: background 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--mw-navy-light);
+        }
+
+        .sidebar.collapsed .sidebar-toggle {
+            right: -32px;
         }
 
         .sidebar-header {
@@ -92,33 +126,59 @@
             margin-bottom: 14px;
         }
 
-        /* Sales Rep Form */
-        .add-rep-form {
+        /* Zone Form */
+        .add-zone-form {
             display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .add-zone-row {
+            display: flex;
+            align-items: center;
             gap: 8px;
         }
 
-        .add-rep-form input[type="text"] {
+        .add-zone-row input[type="text"] {
             flex: 1;
-            padding: 10px 14px;
+            padding: 10px 12px;
             border: 2px solid var(--mw-gray);
             border-radius: 4px;
             font-size: 14px;
             transition: border-color 0.2s;
         }
 
-        .add-rep-form input[type="text"]:focus {
+        .add-zone-row input[type="text"]:focus {
             outline: none;
             border-color: var(--mw-orange);
         }
 
-        .add-rep-form input[type="color"] {
-            width: 44px;
-            height: 42px;
+        .add-zone-row input[type="color"] {
+            width: 36px;
+            height: 36px;
             border: 2px solid var(--mw-gray);
             border-radius: 4px;
             cursor: pointer;
-            padding: 3px;
+            padding: 2px;
+        }
+
+        .add-zone-row input[type="number"] {
+            width: 70px;
+            padding: 8px 10px;
+            border: 2px solid var(--mw-gray);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .add-zone-row input[type="number"]:focus {
+            outline: none;
+            border-color: var(--mw-orange);
+        }
+
+        .add-zone-row label {
+            font-size: 13px;
+            color: var(--mw-gray-dark);
+            white-space: nowrap;
         }
 
         .btn {
@@ -166,7 +226,7 @@
             font-size: 11px;
         }
 
-        /* Sales Rep List */
+        /* Zone List */
         .rep-list {
             flex: 1;
             overflow-y: auto;
@@ -404,20 +464,81 @@
             padding: 18px;
             border-radius: 8px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            max-width: 220px;
-            max-height: 320px;
+            max-width: 260px;
+            max-height: 400px;
             overflow-y: auto;
             z-index: 50;
             border-top: 4px solid var(--mw-orange);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .legend.hidden {
+            transform: translateX(calc(100% + 40px));
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .legend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .legend-header h3 {
+            margin: 0;
+        }
+
+        .legend-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--mw-gray-dark);
+            font-size: 18px;
+            padding: 0;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .legend-close:hover {
+            color: var(--mw-navy);
+        }
+
+        .legend-show-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: var(--mw-white);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--mw-navy);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 49;
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .legend-show-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .legend-show-btn:hover {
+            background: var(--mw-gray-light);
         }
 
         .legend h3 {
             font-size: 12px;
             text-transform: uppercase;
             color: var(--mw-navy);
-            margin-bottom: 14px;
             letter-spacing: 0.5px;
             font-weight: 600;
+            margin: 0;
         }
 
         .legend-item {
@@ -434,6 +555,51 @@
             border-radius: 3px;
             margin-right: 10px;
             border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .legend-section {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--mw-gray);
+        }
+
+        .legend-section h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--mw-navy);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .price-legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--mw-text);
+        }
+
+        .price-legend-item .county-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 8px;
+        }
+
+        .price-legend-item .price-value {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .price-value.positive {
+            color: #27ae60;
+        }
+
+        .price-value.negative {
+            color: #c0392b;
         }
 
         /* Zoom Controls */
@@ -466,6 +632,45 @@
             background: var(--mw-orange);
             border-color: var(--mw-orange);
             color: var(--mw-white);
+        }
+
+        /* Map Options */
+        .map-options {
+            position: absolute;
+            top: 16px;
+            left: 70px;
+            display: flex;
+            gap: 8px;
+            z-index: 50;
+        }
+
+        .map-option-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--mw-white);
+            border: 2px solid var(--mw-gray);
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--mw-navy);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .map-option-btn:hover {
+            border-color: var(--mw-orange);
+        }
+
+        .map-option-btn.active {
+            background: var(--mw-orange);
+            border-color: var(--mw-orange);
+            color: var(--mw-white);
+        }
+
+        .map-option-btn .icon {
+            font-size: 14px;
         }
 
         /* Scrollbar styling */
@@ -668,25 +873,150 @@
         .split-rep-select select {
             margin-bottom: 0;
         }
+
+        .split-rep-select input[type="number"] {
+            width: 100%;
+            padding: 8px 10px;
+            border: 2px solid var(--mw-gray);
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .split-rep-select input[type="number"]:focus {
+            outline: none;
+            border-color: var(--mw-orange);
+        }
+
+        .split-rep-select .price-label {
+            font-size: 11px;
+            color: var(--mw-gray-dark);
+            margin-top: 8px;
+            display: block;
+        }
+
+        /* Custom Color Picker in Modal */
+        .color-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .color-option label {
+            font-size: 13px;
+            color: var(--mw-gray-dark);
+        }
+
+        .color-option input[type="color"] {
+            width: 44px;
+            height: 36px;
+            border: 2px solid var(--mw-gray);
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 3px;
+        }
+
+        .color-option input[type="color"]:focus {
+            outline: none;
+            border-color: var(--mw-orange);
+        }
+
+        /* Price Adjustment Input */
+        .price-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .price-option label {
+            font-size: 13px;
+            color: var(--mw-gray-dark);
+        }
+
+        .price-option input[type="number"] {
+            width: 100px;
+            padding: 8px 10px;
+            border: 2px solid var(--mw-gray);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .price-option input[type="number"]:focus {
+            outline: none;
+            border-color: var(--mw-orange);
+        }
+
+        .price-option .price-hint {
+            font-size: 11px;
+            color: var(--mw-gray-dark);
+            font-style: italic;
+        }
+
+        /* Multi-select bar color picker */
+        .multi-select-bar input[type="color"] {
+            width: 36px;
+            height: 32px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        .multi-select-bar input[type="number"] {
+            width: 80px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+        }
+
+        .multi-select-bar .price-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* City Markers */
+        .city-dot {
+            fill: var(--mw-navy);
+            stroke: var(--mw-white);
+            stroke-width: 1px;
+        }
+
+        .city-label {
+            font-size: 7px;
+            fill: var(--mw-navy);
+            pointer-events: none;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">&#9664;</button>
             <div class="sidebar-header">
                 <h1>Sales Territory Map</h1>
                 <div class="subtitle">North Carolina</div>
                 <div class="hint">Tip: Cmd/Ctrl+click to select multiple counties</div>
             </div>
 
-            <!-- Add Sales Rep -->
+            <!-- Add Zone -->
             <div class="sidebar-section">
-                <h2>Add Sales Rep</h2>
-                <div class="add-rep-form">
-                    <input type="text" id="repName" placeholder="Rep name...">
-                    <input type="color" id="repColor" value="#f7941d">
-                    <button class="btn btn-primary" onclick="addSalesRep()">Add</button>
+                <h2>Add Zone</h2>
+                <div class="add-zone-form">
+                    <div class="add-zone-row">
+                        <input type="text" id="repName" placeholder="Zone name...">
+                        <button class="btn btn-primary" onclick="addSalesRep()">Add</button>
+                    </div>
+                    <div class="add-zone-row">
+                        <label>Color:</label>
+                        <input type="color" id="repColor" value="#f7941d">
+                        <label>Price: $</label>
+                        <input type="number" id="repPrice" placeholder="0" title="Price adjustment">
+                    </div>
                 </div>
             </div>
 
@@ -696,7 +1026,7 @@
                 <div class="stats-grid">
                     <div class="stat-card highlight">
                         <div class="stat-value" id="totalReps">0</div>
-                        <div class="stat-label">Sales Reps</div>
+                        <div class="stat-label">Zones</div>
                     </div>
                     <div class="stat-card highlight">
                         <div class="stat-value" id="assignedCounties">0</div>
@@ -713,12 +1043,12 @@
                 </div>
             </div>
 
-            <!-- Sales Rep List -->
-            <div class="sidebar-section" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-                <h2>Sales Reps</h2>
-            </div>
-            <div class="rep-list" id="repList">
-                <!-- Populated dynamically -->
+            <!-- Zone List -->
+            <div class="sidebar-section" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0;">
+                <h2>Zones</h2>
+                <div class="rep-list" id="repList">
+                    <!-- Populated dynamically -->
+                </div>
             </div>
         </div>
 
@@ -733,6 +1063,11 @@
                 <button class="zoom-btn" onclick="zoomOut()">−</button>
                 <button class="zoom-btn" onclick="resetZoom()">⟲</button>
             </div>
+            <div class="map-options">
+                <button class="map-option-btn active" id="toggleCities" onclick="toggleCityLabels()" title="Toggle city labels">
+                    <span class="icon">&#9679;</span> Cities
+                </button>
+            </div>
             <button class="btn btn-secondary export-btn" onclick="exportMap()">Export as Image</button>
             <div id="map"></div>
             <div class="tooltip" id="tooltip"></div>
@@ -740,15 +1075,21 @@
             <div class="multi-select-bar" id="multiSelectBar">
                 <span><span class="count" id="multiSelectCount">0</span> counties selected</span>
                 <select id="multiSelectRep">
-                    <option value="">-- Assign to Rep --</option>
+                    <option value="">-- Assign to Zone --</option>
                 </select>
+                <input type="color" id="multiSelectColor" value="#f7941d" title="Custom Color">
                 <button class="btn btn-primary" onclick="assignSelectedCounties()">Assign</button>
+                <button class="btn btn-secondary" onclick="unassignSelectedCounties()">Unassign</button>
                 <button class="btn btn-clear" onclick="clearSelection()">Clear</button>
             </div>
             <div class="legend" id="legend">
-                <h3>Legend</h3>
+                <div class="legend-header">
+                    <h3>Legend</h3>
+                    <button class="legend-close" id="legendClose" title="Hide Legend">&times;</button>
+                </div>
                 <div id="legendItems"></div>
             </div>
+            <button class="legend-show-btn" id="legendShowBtn">Show Legend</button>
         </div>
     </div>
 
@@ -760,15 +1101,19 @@
             </div>
             <div class="modal-body">
                 <select id="repSelect">
-                    <option value="">-- Select Sales Rep --</option>
+                    <option value="">-- Select Zone --</option>
                 </select>
+                <div class="color-option">
+                    <label>Custom Color:</label>
+                    <input type="color" id="countyColorPicker" value="#f7941d">
+                </div>
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
                     <button class="btn btn-danger" onclick="unassignCounty()">Unassign</button>
                     <button class="btn btn-primary" onclick="assignCounty()">Assign</button>
                 </div>
                 <div class="modal-split-section" id="splitSection" style="display: none;">
-                    <p>This county is already assigned. Split it between two reps?</p>
+                    <p>This county is already assigned. Split it between two zones?</p>
                     <button class="btn btn-split" onclick="startSplitMode()">Split County</button>
                 </div>
             </div>
@@ -786,13 +1131,13 @@
                     <div>
                         <label>Side 1 (highlighted)</label>
                         <select id="splitRep1">
-                            <option value="">-- Select Rep --</option>
+                            <option value="">-- Select Zone --</option>
                         </select>
                     </div>
                     <div>
                         <label>Side 2</label>
                         <select id="splitRep2">
-                            <option value="">-- Select Rep --</option>
+                            <option value="">-- Select Zone --</option>
                         </select>
                     </div>
                 </div>
@@ -805,6 +1150,7 @@
     </div>
 
     <script src="nc-counties.js"></script>
+    <script src="nc-cities.js"></script>
     <script>
         // State
         let salesReps = [];
@@ -821,6 +1167,9 @@
 
         // Multi-Select State
         let selectedCounties = new Set(); // Set of county GEOIDs
+
+        // Modal Update State (prevents event listeners from overwriting colors during programmatic updates)
+        let isUpdatingModal = false;
 
         // D3 Variables
         let svg, g, projection, path, zoom;
@@ -840,6 +1189,45 @@
                 return color;
             }
             return '#f7941d';
+        }
+
+        // Format price adjustment for display
+        function formatPriceAdjustment(price) {
+            if (price === null || price === undefined || price === 0) return null;
+            const num = parseFloat(price);
+            if (isNaN(num)) return null;
+            if (num > 0) return `+$${num.toFixed(0)}`;
+            return `-$${Math.abs(num).toFixed(0)}`;
+        }
+
+        // Get price class for styling
+        function getPriceClass(price) {
+            if (price === null || price === undefined || price === 0) return '';
+            const num = parseFloat(price);
+            if (isNaN(num)) return '';
+            return num > 0 ? 'positive' : 'negative';
+        }
+
+        // Basic color name to hex mapping
+        const colorNameMap = {
+            'red': '#e74c3c',
+            'blue': '#3498db',
+            'green': '#27ae60',
+            'yellow': '#f1c40f',
+            'orange': '#f39c12',
+            'purple': '#9b59b6',
+            'pink': '#e91e63',
+            'brown': '#795548',
+            'gray': '#95a5a6',
+            'grey': '#95a5a6',
+            'black': '#2c3e50',
+            'white': '#ecf0f1'
+        };
+
+        // Get color from zone name if it matches a basic color
+        function getColorFromName(name) {
+            const lowerName = name.toLowerCase().trim();
+            return colorNameMap[lowerName] || null;
         }
 
         // Initialize
@@ -943,6 +1331,57 @@
                 .attr('class', 'county-label')
                 .attr('transform', d => `translate(${path.centroid(d)})`)
                 .text(d => d.properties.NAME);
+
+            // Draw cities on top of counties
+            drawCities();
+        }
+
+        function drawCities() {
+            // Draw city dots
+            g.selectAll('.city-dot')
+                .data(ncCitiesGeoJSON.features)
+                .enter()
+                .append('circle')
+                .attr('class', 'city-dot')
+                .attr('cx', d => projection(d.geometry.coordinates)[0])
+                .attr('cy', d => projection(d.geometry.coordinates)[1])
+                .attr('r', 4)
+                .on('mouseover', (event, d) => showCityTooltip(event, d.properties))
+                .on('mousemove', (event) => moveTooltip(event))
+                .on('mouseout', hideTooltip);
+
+            // Draw city labels
+            g.selectAll('.city-label')
+                .data(ncCitiesGeoJSON.features)
+                .enter()
+                .append('text')
+                .attr('class', 'city-label')
+                .attr('x', d => projection(d.geometry.coordinates)[0] + 6)
+                .attr('y', d => projection(d.geometry.coordinates)[1] + 3)
+                .text(d => d.properties.name);
+        }
+
+        function showCityTooltip(event, properties) {
+            const tooltip = document.getElementById('tooltip');
+            const population = properties.population.toLocaleString();
+
+            tooltip.innerHTML = `
+                <div class="tooltip-title">${escapeHtml(properties.name)}</div>
+                <div class="tooltip-rep">Population: ${population}</div>
+            `;
+            tooltip.classList.add('visible');
+            moveTooltip(event);
+        }
+
+        let citiesVisible = true;
+
+        function toggleCityLabels() {
+            citiesVisible = !citiesVisible;
+            const btn = document.getElementById('toggleCities');
+            btn.classList.toggle('active', citiesVisible);
+
+            g.selectAll('.city-label').style('display', citiesVisible ? null : 'none');
+            g.selectAll('.city-dot').style('display', citiesVisible ? null : 'none');
         }
 
         function drawRegularCounty(feature) {
@@ -1104,6 +1543,16 @@
             if (isSplitAssignment(assignment)) {
                 return '#d0d8e0'; // Split counties are drawn separately
             }
+            // Check for new object format with custom color
+            if (typeof assignment === 'object' && assignment.repId) {
+                // Custom color takes priority if present
+                if (assignment.color) {
+                    return sanitizeColor(assignment.color);
+                }
+                const rep = salesReps.find(r => r.id === assignment.repId);
+                return rep ? rep.color : '#d0d8e0';
+            }
+            // Legacy format: assignment is just the repId string
             const rep = salesReps.find(r => r.id === assignment);
             return rep ? rep.color : '#d0d8e0';
         }
@@ -1118,11 +1567,19 @@
             g.selectAll('.county-label').remove();
             g.selectAll('.split-point').remove();
             g.selectAll('.split-line-preview').remove();
+            g.selectAll('.city-dot').remove();
+            g.selectAll('.city-label').remove();
 
             // Clean up clip paths
             svg.selectAll('defs clipPath[id^="clip-"]').remove();
 
             drawCounties();
+
+            // Restore city visibility state
+            if (!citiesVisible) {
+                g.selectAll('.city-label').style('display', 'none');
+                g.selectAll('.city-dot').style('display', 'none');
+            }
         }
 
         // Zoom Controls
@@ -1145,18 +1602,37 @@
             const assignment = assignments[countyId];
 
             let repText = 'Unassigned';
+            let priceText = '';
             if (isSplitAssignment(assignment)) {
                 const rep1 = salesReps.find(r => r.id === assignment.rep1);
                 const rep2 = salesReps.find(r => r.id === assignment.rep2);
                 repText = `Split: ${rep1 ? escapeHtml(rep1.name) : '?'} / ${rep2 ? escapeHtml(rep2.name) : '?'}`;
+                // Show zone prices for split counties
+                const price1 = rep1 && rep1.price ? formatPriceAdjustment(rep1.price) : null;
+                const price2 = rep2 && rep2.price ? formatPriceAdjustment(rep2.price) : null;
+                if (price1 || price2) {
+                    const parts = [];
+                    if (price1) parts.push(`${escapeHtml(rep1.name)}: ${price1}`);
+                    if (price2) parts.push(`${escapeHtml(rep2.name)}: ${price2}`);
+                    priceText = `<div style="margin-top:4px;font-size:12px;">${parts.join(' | ')}</div>`;
+                }
             } else if (assignment) {
-                const rep = salesReps.find(r => r.id === assignment);
+                // Handle both new object format and legacy string format
+                const repId = typeof assignment === 'object' ? assignment.repId : assignment;
+                const rep = salesReps.find(r => r.id === repId);
                 repText = rep ? `Assigned to: ${escapeHtml(rep.name)}` : 'Unassigned';
+                // Show zone price
+                if (rep && rep.price) {
+                    const priceFormatted = formatPriceAdjustment(rep.price);
+                    const priceClass = getPriceClass(rep.price);
+                    priceText = `<div style="margin-top:4px;font-size:12px;" class="price-value ${priceClass}">Price: ${priceFormatted}</div>`;
+                }
             }
 
             tooltip.innerHTML = `
                 <div class="tooltip-title">${escapeHtml(properties.NAME)} County</div>
                 <div class="tooltip-rep">${repText}</div>
+                ${priceText}
             `;
             tooltip.classList.add('visible');
             moveTooltip(event);
@@ -1166,10 +1642,17 @@
             const tooltip = document.getElementById('tooltip');
             const repId = side === 1 ? assignment.rep1 : assignment.rep2;
             const rep = salesReps.find(r => r.id === repId);
+            let priceText = '';
+            if (rep && rep.price) {
+                const priceFormatted = formatPriceAdjustment(rep.price);
+                const priceClass = getPriceClass(rep.price);
+                priceText = `<div style="margin-top:4px;font-size:12px;" class="price-value ${priceClass}">Price: ${priceFormatted}</div>`;
+            }
 
             tooltip.innerHTML = `
                 <div class="tooltip-title">${escapeHtml(properties.NAME)} County (Side ${side})</div>
                 <div class="tooltip-rep">${rep ? escapeHtml(rep.name) : 'Unassigned'}</div>
+                ${priceText}
             `;
             tooltip.classList.add('visible');
             moveTooltip(event);
@@ -1191,24 +1674,50 @@
         function openModal(properties) {
             if (splitMode) return;
 
+            // Prevent event listeners from overwriting colors during setup
+            isUpdatingModal = true;
+
             selectedCounty = properties;
             document.getElementById('modalTitle').textContent = `Assign ${properties.NAME} County`;
 
             const select = document.getElementById('repSelect');
-            select.innerHTML = '<option value="">-- Select Sales Rep --</option>';
+            select.innerHTML = '<option value="">-- Select Zone --</option>';
 
             const currentAssignment = assignments[properties.GEOID];
             const isCurrentlySplit = isSplitAssignment(currentAssignment);
+
+            // Determine current repId (handles both old string format and new object format)
+            let currentRepId = null;
+            let currentCustomColor = null;
+            if (currentAssignment && !isCurrentlySplit) {
+                if (typeof currentAssignment === 'object' && currentAssignment.repId) {
+                    currentRepId = currentAssignment.repId;
+                    currentCustomColor = currentAssignment.color;
+                } else if (typeof currentAssignment === 'string') {
+                    currentRepId = currentAssignment;
+                }
+            }
 
             salesReps.forEach(rep => {
                 const option = document.createElement('option');
                 option.value = rep.id;
                 option.textContent = rep.name;
-                if (!isCurrentlySplit && currentAssignment === rep.id) {
+                if (currentRepId === rep.id) {
                     option.selected = true;
                 }
                 select.appendChild(option);
             });
+
+            // Set color picker to existing custom color or default
+            const colorPicker = document.getElementById('countyColorPicker');
+            if (currentCustomColor) {
+                colorPicker.value = currentCustomColor;
+            } else if (currentRepId) {
+                const rep = salesReps.find(r => r.id === currentRepId);
+                colorPicker.value = rep ? rep.color : '#f7941d';
+            } else {
+                colorPicker.value = '#f7941d';
+            }
 
             // Show split section if county is already assigned (not split)
             const splitSection = document.getElementById('splitSection');
@@ -1219,6 +1728,9 @@
             }
 
             document.getElementById('modalOverlay').classList.add('visible');
+
+            // Re-enable event listeners
+            isUpdatingModal = false;
         }
 
         function openSplitModal(properties, assignment) {
@@ -1226,7 +1738,7 @@
             document.getElementById('modalTitle').textContent = `Manage ${properties.NAME} County (Split)`;
 
             const select = document.getElementById('repSelect');
-            select.innerHTML = '<option value="">-- Reassign Entire County --</option>';
+            select.innerHTML = '<option value="">-- Reassign Entire County to Zone --</option>';
             salesReps.forEach(rep => {
                 const option = document.createElement('option');
                 option.value = rep.id;
@@ -1274,8 +1786,8 @@
                 bar.classList.add('visible');
                 countEl.textContent = selectedCounties.size;
 
-                // Update rep dropdown
-                select.innerHTML = '<option value="">-- Assign to Rep --</option>';
+                // Update zone dropdown
+                select.innerHTML = '<option value="">-- Assign to Zone --</option>';
                 salesReps.forEach(rep => {
                     const option = document.createElement('option');
                     option.value = rep.id;
@@ -1289,14 +1801,30 @@
 
         function assignSelectedCounties() {
             const repId = document.getElementById('multiSelectRep').value;
+            const customColor = document.getElementById('multiSelectColor').value;
+
             if (!repId) {
-                alert('Please select a sales rep');
+                alert('Please select a zone');
                 return;
             }
 
-            // Assign all selected counties to the rep
+            // Get the rep's default color to compare
+            const rep = salesReps.find(r => r.id === repId);
+            const repDefaultColor = rep ? rep.color : '#f7941d';
+
+            // Determine if we need the object format
+            const hasCustomColor = customColor && customColor !== repDefaultColor;
+
+            // Assign all selected counties to the rep with optional custom color
             selectedCounties.forEach(countyId => {
-                assignments[countyId] = repId;
+                if (hasCustomColor) {
+                    assignments[countyId] = {
+                        repId: repId,
+                        color: sanitizeColor(customColor)
+                    };
+                } else {
+                    assignments[countyId] = repId;
+                }
             });
 
             saveToLocalStorage();
@@ -1304,6 +1832,7 @@
             redrawMap();
             updateStats();
             renderRepList();
+            updateLegend();
         }
 
         function clearSelection() {
@@ -1312,19 +1841,49 @@
             updateCountySelectionVisuals();
         }
 
+        function unassignSelectedCounties() {
+            selectedCounties.forEach(countyId => {
+                delete assignments[countyId];
+            });
+
+            saveToLocalStorage();
+            clearSelection();
+            redrawMap();
+            updateStats();
+            renderRepList();
+            updateLegend();
+        }
+
         function assignCounty() {
             const repId = document.getElementById('repSelect').value;
+            const customColor = document.getElementById('countyColorPicker').value;
+
             if (!repId || !selectedCounty) {
                 closeModal();
                 return;
             }
 
+            // Get the rep's default color to compare
+            const rep = salesReps.find(r => r.id === repId);
+            const repDefaultColor = rep ? rep.color : '#f7941d';
+
             // This overwrites any existing assignment (including splits)
-            assignments[selectedCounty.GEOID] = repId;
+            // Determine if we need the object format (custom color)
+            const hasCustomColor = customColor && customColor !== repDefaultColor;
+
+            if (hasCustomColor) {
+                assignments[selectedCounty.GEOID] = {
+                    repId: repId,
+                    color: sanitizeColor(customColor)
+                };
+            } else {
+                assignments[selectedCounty.GEOID] = repId;
+            }
             saveToLocalStorage();
             redrawMap();
             updateStats();
             renderRepList();
+            updateLegend();
             closeModal();
         }
 
@@ -1339,6 +1898,7 @@
             redrawMap();
             updateStats();
             renderRepList();
+            updateLegend();
             closeModal();
         }
 
@@ -1436,16 +1996,17 @@
             document.getElementById('splitModalTitle').textContent =
                 `Assign ${splitCountyFeature.properties.NAME} County Regions`;
 
-            // Populate rep selects
+            // Populate zone selects
             const select1 = document.getElementById('splitRep1');
             const select2 = document.getElementById('splitRep2');
 
-            select1.innerHTML = '<option value="">-- Select Rep --</option>';
-            select2.innerHTML = '<option value="">-- Select Rep --</option>';
+            select1.innerHTML = '<option value="">-- Select Zone --</option>';
+            select2.innerHTML = '<option value="">-- Select Zone --</option>';
 
             // Pre-select current rep if county was assigned
             const currentAssignment = assignments[splitCountyId];
-            const currentRepId = typeof currentAssignment === 'string' ? currentAssignment : null;
+            const currentRepId = typeof currentAssignment === 'string' ? currentAssignment :
+                (typeof currentAssignment === 'object' && currentAssignment.repId ? currentAssignment.repId : null);
 
             salesReps.forEach((rep, idx) => {
                 const opt1 = document.createElement('option');
@@ -1473,12 +2034,12 @@
             const rep2Id = document.getElementById('splitRep2').value;
 
             if (!rep1Id || !rep2Id) {
-                alert('Please select a sales rep for each side');
+                alert('Please select a zone for each side');
                 return;
             }
 
             if (rep1Id === rep2Id) {
-                alert('Please select different sales reps for each side');
+                alert('Please select different zones for each side');
                 return;
             }
 
@@ -1508,25 +2069,37 @@
             redrawMap();
             updateStats();
             renderRepList();
+            updateLegend();
         }
 
-        // Sales Rep Management
+        // Zone Management
         function addSalesRep() {
             const nameInput = document.getElementById('repName');
             const colorInput = document.getElementById('repColor');
+            const priceInput = document.getElementById('repPrice');
 
             const name = nameInput.value.trim();
             if (!name) return;
 
+            // Check if the name matches a basic color
+            const colorFromName = getColorFromName(name);
+            const finalColor = colorFromName || sanitizeColor(colorInput.value);
+
+            // Get price adjustment (can be positive or negative)
+            const priceValue = priceInput.value ? parseFloat(priceInput.value) : null;
+            const price = (priceValue !== null && !isNaN(priceValue) && priceValue !== 0) ? priceValue : null;
+
             const rep = {
                 id: 'rep_' + Date.now(),
                 name: name,
-                color: sanitizeColor(colorInput.value)
+                color: finalColor,
+                price: price
             };
 
             salesReps.push(rep);
             nameInput.value = '';
             colorInput.value = getRandomColor();
+            priceInput.value = '';
 
             saveToLocalStorage();
             renderRepList();
@@ -1538,7 +2111,7 @@
             const rep = salesReps.find(r => r.id === repId);
             if (!rep) return;
 
-            const newName = prompt('Enter new name:', rep.name);
+            const newName = prompt('Enter new zone name:', rep.name);
             if (newName && newName.trim()) {
                 rep.name = newName.trim();
                 saveToLocalStorage();
@@ -1549,7 +2122,7 @@
         }
 
         function deleteSalesRep(repId) {
-            if (!confirm('Delete this sales rep and unassign all their counties?')) return;
+            if (!confirm('Delete this zone and unassign all its counties?')) return;
 
             // Handle regular and split assignments
             Object.keys(assignments).forEach(countyId => {
@@ -1559,7 +2132,11 @@
                         // If rep is part of a split, remove the entire split
                         delete assignments[countyId];
                     }
+                } else if (typeof assignment === 'object' && assignment.repId === repId) {
+                    // New object format with custom color
+                    delete assignments[countyId];
                 } else if (assignment === repId) {
+                    // Legacy string format
                     delete assignments[countyId];
                 }
             });
@@ -1578,7 +2155,7 @@
             const container = document.getElementById('repList');
 
             if (salesReps.length === 0) {
-                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No sales reps added yet</p>';
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No zones added yet</p>';
                 return;
             }
 
@@ -1609,7 +2186,11 @@
                 if (isSplitAssignment(assignment)) {
                     if (assignment.rep1 === repId) count += 0.5;
                     if (assignment.rep2 === repId) count += 0.5;
+                } else if (typeof assignment === 'object' && assignment.repId === repId) {
+                    // New object format with custom color
+                    count += 1;
                 } else if (assignment === repId) {
+                    // Legacy string format
                     count += 1;
                 }
             });
@@ -1648,10 +2229,14 @@
             `;
 
             salesReps.forEach(rep => {
+                const priceFormatted = rep.price ? formatPriceAdjustment(rep.price) : '';
+                const priceClass = rep.price ? getPriceClass(rep.price) : '';
+                const priceHtml = priceFormatted ? `<span class="price-value ${priceClass}" style="margin-left: 8px;">${priceFormatted}</span>` : '';
+
                 html += `
                     <div class="legend-item">
                         <div class="legend-color" style="background: ${sanitizeColor(rep.color)}"></div>
-                        <span>${escapeHtml(rep.name)}</span>
+                        <span>${escapeHtml(rep.name)}${priceHtml}</span>
                     </div>
                 `;
             });
@@ -1673,9 +2258,21 @@
             // Clone SVG and add styles inline for export
             const svgClone = svgElement.cloneNode(true);
 
+            // Use wider dimensions for export to capture full map
+            const exportWidth = 1100;
+            const exportHeight = height;
+            const viewBoxOffsetX = -100; // Shift viewBox left to capture western counties
+
             // Set explicit dimensions
-            svgClone.setAttribute('width', width);
-            svgClone.setAttribute('height', height);
+            svgClone.setAttribute('width', exportWidth);
+            svgClone.setAttribute('height', exportHeight);
+            svgClone.setAttribute('viewBox', `${viewBoxOffsetX} 0 ${exportWidth} ${exportHeight}`);
+
+            // Reset any zoom/pan transform to export the full map
+            const gElement = svgClone.querySelector('g');
+            if (gElement) {
+                gElement.removeAttribute('transform');
+            }
 
             // Add white background
             const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -1711,14 +2308,48 @@
                 el.style.fontWeight = '500';
             });
 
+            // Inline styles for city dots
+            svgClone.querySelectorAll('.city-dot').forEach(el => {
+                el.style.fill = '#1a2a3a';
+                el.style.stroke = '#ffffff';
+                el.style.strokeWidth = '1px';
+            });
+
+            // Inline styles for city labels (scaled down proportionally like county labels)
+            svgClone.querySelectorAll('.city-label').forEach(el => {
+                el.style.fontSize = '4px';
+                el.style.fill = '#1a2a3a';
+                el.style.fontFamily = 'Roboto, Arial, sans-serif';
+                el.style.fontWeight = '600';
+            });
+
             const svgString = serializer.serializeToString(svgClone);
             const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(svgBlob);
 
-            // Create canvas and draw SVG
+            // Build legend data for export using zone prices directly
+            const legendItems = [{ name: 'Unassigned', color: '#d0d8e0', price: null }];
+            salesReps.forEach(rep => {
+                legendItems.push({
+                    name: rep.name,
+                    color: rep.color,
+                    price: rep.price || null
+                });
+            });
+
+            // Calculate legend dimensions
+            const legendPadding = 20;
+            const legendItemHeight = 24;
+            const legendItemWidth = 180; // Wider to accommodate price
+            const itemsPerRow = Math.floor((exportWidth - legendPadding * 2) / legendItemWidth);
+            const legendRows = Math.ceil(legendItems.length / itemsPerRow);
+            const totalLegendHeight = legendPadding + 20 + (legendRows * legendItemHeight) + legendPadding;
+
+            // Create canvas with space for legend
+            const totalHeight = exportHeight + totalLegendHeight;
             const canvas = document.createElement('canvas');
-            canvas.width = width * 2; // Higher resolution
-            canvas.height = height * 2;
+            canvas.width = exportWidth * 2; // Higher resolution
+            canvas.height = totalHeight * 2;
             const ctx = canvas.getContext('2d');
             ctx.scale(2, 2);
 
@@ -1728,9 +2359,61 @@
                 URL.revokeObjectURL(url);
             };
             img.onload = function() {
+                // Draw map background
                 ctx.fillStyle = '#e8eef3';
-                ctx.fillRect(0, 0, width, height);
+                ctx.fillRect(0, 0, exportWidth, totalHeight);
                 ctx.drawImage(img, 0, 0);
+
+                // Draw legend section below the map
+                const legendStartY = exportHeight + legendPadding;
+
+                // Draw legend background
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(legendPadding - 10, exportHeight + 5, exportWidth - legendPadding * 2 + 20, totalLegendHeight - 10);
+                ctx.strokeStyle = '#e0e0e0';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(legendPadding - 10, exportHeight + 5, exportWidth - legendPadding * 2 + 20, totalLegendHeight - 10);
+
+                // Draw "Legend" title
+                ctx.fillStyle = '#1a2a3a';
+                ctx.font = 'bold 14px Roboto, Arial, sans-serif';
+                ctx.fillText('Legend', legendPadding, legendStartY);
+
+                // Draw zone legend items horizontally
+                let currentX = legendPadding;
+                let currentY = legendStartY + 20;
+
+                legendItems.forEach((item, index) => {
+                    // Check if we need to wrap to next row
+                    if (currentX + legendItemWidth > exportWidth - legendPadding) {
+                        currentX = legendPadding;
+                        currentY += legendItemHeight;
+                    }
+
+                    // Draw color box
+                    ctx.fillStyle = item.color;
+                    ctx.fillRect(currentX, currentY - 12, 16, 16);
+                    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(currentX, currentY - 12, 16, 16);
+
+                    // Draw label
+                    ctx.fillStyle = '#333333';
+                    ctx.font = '12px Roboto, Arial, sans-serif';
+                    ctx.fillText(item.name, currentX + 22, currentY);
+
+                    // Draw price if present
+                    if (item.price) {
+                        const nameWidth = ctx.measureText(item.name).width;
+                        const priceFormatted = item.price > 0 ? `+$${item.price}` : `-$${Math.abs(item.price)}`;
+                        const priceColor = item.price > 0 ? '#27ae60' : '#c0392b';
+                        ctx.fillStyle = priceColor;
+                        ctx.font = 'bold 12px Roboto, Arial, sans-serif';
+                        ctx.fillText(priceFormatted, currentX + 22 + nameWidth + 6, currentY);
+                    }
+
+                    currentX += legendItemWidth;
+                });
 
                 // Download
                 const link = document.createElement('a');
@@ -1752,9 +2435,44 @@
             if (e.target.id === 'splitModalOverlay') cancelSplitAssignment();
         });
 
-        // Enter key for adding rep
+        // Enter key for adding zone
         document.getElementById('repName').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') addSalesRep();
+        });
+
+        document.getElementById('repPrice').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addSalesRep();
+        });
+
+        // Auto-update color picker when zone name matches a color
+        document.getElementById('repName').addEventListener('input', (e) => {
+            const colorFromName = getColorFromName(e.target.value);
+            if (colorFromName) {
+                document.getElementById('repColor').value = colorFromName;
+            }
+        });
+
+        // Update color picker when zone selection changes in modal
+        document.getElementById('repSelect').addEventListener('change', (e) => {
+            if (isUpdatingModal) return; // Skip if programmatic update
+            const repId = e.target.value;
+            if (repId) {
+                const rep = salesReps.find(r => r.id === repId);
+                if (rep) {
+                    document.getElementById('countyColorPicker').value = rep.color;
+                }
+            }
+        });
+
+        // Update color picker when zone selection changes in multi-select bar
+        document.getElementById('multiSelectRep').addEventListener('change', (e) => {
+            const repId = e.target.value;
+            if (repId) {
+                const rep = salesReps.find(r => r.id === repId);
+                if (rep) {
+                    document.getElementById('multiSelectColor').value = rep.color;
+                }
+            }
         });
 
         // ESC key to cancel split mode or clear selection
@@ -1766,6 +2484,26 @@
                     clearSelection();
                 }
             }
+        });
+
+        // Sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            sidebar.classList.toggle('collapsed');
+            // Update arrow direction
+            toggle.innerHTML = sidebar.classList.contains('collapsed') ? '&#9654;' : '&#9664;';
+        });
+
+        // Legend toggle functionality
+        document.getElementById('legendClose').addEventListener('click', () => {
+            document.getElementById('legend').classList.add('hidden');
+            document.getElementById('legendShowBtn').classList.add('visible');
+        });
+
+        document.getElementById('legendShowBtn').addEventListener('click', () => {
+            document.getElementById('legend').classList.remove('hidden');
+            document.getElementById('legendShowBtn').classList.remove('visible');
         });
     </script>
 </body>
